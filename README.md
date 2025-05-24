@@ -30,3 +30,9 @@ npm install
 # 3. Start the development server
 npm run dev
 ```
+
+---
+
+Let me know if you'd like this tailored for GitHub Pages deployment, or if you're adding advanced features like a daily word challenge or score tracking.
+
+~ Designed and developed by **Maximus Teo**
