@@ -9,5 +9,5 @@ const words = fs.readFileSync('words_alpha.txt', 'utf-8')
   .filter(w => w.length === 5 && /^[a-z]+$/.test(w))
   .map(w => w.toLowerCase());
 
-fs.writeFileSync('src/validWords.json', JSON.stringify(words, null, 2));
+fs.writeFileSync('../validWords.json', JSON.stringify(words, null, 2));
 console.log(`Saved ${words.length} 5-letter words.`);
