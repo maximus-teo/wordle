@@ -1,0 +1,80 @@
+.keyboard {
+  margin-top: 20px;
+  padding: 0 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 5px 0;
+}
+
+.key {
+  font-size: 1rem;
+  font-weight: bold;
+  min-width: 40px;
+  margin: 0 0px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #818384;
+  color: white;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.key:hover {
+    background-color: #565858;
+}
+
+.key.correct {
+  background-color: #538d4e;
+}
+
+.key.present {
+  background-color: #b59f3b;
+}
+
+.key.absent {
+  background-color: #3a3a3c;
+}
+
+/* Special keys */
+.key:has(> svg), .key:has(> .icon) {
+  min-width: 15%;
+  max-width: 20%;
+}
+
+@media (max-width: 600px) {
+  .keyboard {
+    padding: 0 20px;
+    margin-top: 10px;
+  }
+
+  .keyboard-row {
+    gap: 4px;
+  }
+
+  .key {
+    min-width: 8%;
+    max-width: 10%;
+    font-size: 14px;
+    padding: 10px 0;
+  }
+
+  .key-special {
+    flex: 1.5 1 auto;
+    min-width: 16%;
+    max-width: 25%;
+    font-size: 0.9rem;
+  }
+
+  .key:has(> svg), .key:has(> .icon) {
+    min-width: 18%;
+    max-width: 25%;
+  }
+}
