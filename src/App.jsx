@@ -22,6 +22,7 @@ function App() {
   const [usedLetters, setUsedLetters] = useState({});
   const [gameOver, setGameOver] = useState(false);
   const [gameResult, setGameResult] = useState(null); // 'win' | 'lose' | null
+  const [gameId, setGameId] = useState(0);
 
   const updateUsedLetters = (guess) => {
     const newUsed = { ...usedLetters };
@@ -87,12 +88,14 @@ function App() {
     setGameResult(null);
     setUsedLetters({});
     setRevealedRows([]);
+    setGameId(prev => prev + 1); // bump to force reset
   };
 
   return (
     <div className="app">
       <h1>Wordle</h1>
       <Grid
+        key={gameId} // force full re-mount
         guesses={guesses}
         currentGuess={currentGuess}
         solution={solution}
