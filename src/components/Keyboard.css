@@ -25,6 +25,9 @@
   color: white;
   cursor: pointer;
   text-transform: uppercase;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .key:hover {
@@ -35,8 +38,16 @@
   background-color: #538d4e;
 }
 
+.key.correct:hover {
+  background-color: #396136;
+}
+
 .key.present {
   background-color: #b59f3b;
+}
+
+.key.present:hover {
+  background-color: #968330;
 }
 
 .key.absent {

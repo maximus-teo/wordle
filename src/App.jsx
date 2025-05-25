@@ -3,11 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import Grid from './components/Grid';
 import Keyboard from './components/Keyboard';
-import wordList from './data/validWords';
+import Popup from './components/Popup';
+import solutionWords from './data/solutionWords';
+import validWords from './data/validWords';
 import './App.css';
+import confetti from 'canvas-confetti';
 
 const getRandomWord = () => {
-  return wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
+  return solutionWords[Math.floor(Math.random() * solutionWords.length)].toUpperCase();
 };
 
 function App() {
@@ -17,14 +20,37 @@ function App() {
   const [invalidGuess, setInvalidGuess] = useState(false);
   const [revealedRows, setRevealedRows] = useState([]);
   const [usedLetters, setUsedLetters] = useState({});
+  const [gameOver, setGameOver] = useState(false);
+  const [gameResult, setGameResult] = useState(null); // 'win' | 'lose' | null
+
+  const updateUsedLetters = (guess) => {
+    const newUsed = { ...usedLetters };
+    guess.split('').forEach((char, i) => {
+      if (solution[i] === char) {
+        newUsed[char] = 'correct';
+      } else if (solution.includes(char) && newUsed[char] !== 'correct') {
+        newUsed[char] = 'present';
+      } else if (!solution.includes(char) && !newUsed[char]) {
+        newUsed[char] = 'absent';
+      }
+    });
+    setUsedLetters(newUsed);
+  };
 
   const handleKeyPress = (key) => {
     if (key === 'Enter' && currentGuess.length === 5) {
-      if (wordList.includes(currentGuess.toLowerCase())) {
+      if (validWords.includes(currentGuess.toLowerCase())) {
         setGuesses([...guesses, currentGuess]);
         updateUsedLetters(currentGuess);
         setRevealedRows([...revealedRows, guesses.length]); // mark this row for animation
         setCurrentGuess('');
+        if (currentGuess === solution) {
+          setGameResult('win');
+          setGameOver(true);
+        } else if (guesses.length + 1 >= 6) {
+          setGameResult('lose');
+          setGameOver(true);
+        }
       }
       else {
         setInvalidGuess(true); // trigger shake
@@ -43,18 +69,24 @@ function App() {
     return () => window.removeEventListener('keydown', listener);
   }, [currentGuess, guesses]);
 
-  const updateUsedLetters = (guess) => {
-    const newUsed = { ...usedLetters };
-    guess.split('').forEach((char, i) => {
-      if (solution[i] === char) {
-        newUsed[char] = 'correct';
-      } else if (solution.includes(char) && newUsed[char] !== 'correct') {
-        newUsed[char] = 'present';
-      } else if (!solution.includes(char) && !newUsed[char]) {
-        newUsed[char] = 'absent';
-      }
+  useEffect(() => {
+  if (gameResult === 'win') {
+    confetti({
+      particleCount: 150,
+      spread: 80,
+      origin: { y: 0.6 }
     });
-    setUsedLetters(newUsed);
+  }
+  }, [gameResult]);
+
+  const restartGame = () => {
+    setSolution(getRandomWord());
+    setGuesses([]);
+    setCurrentGuess('');
+    setGameOver(false);
+    setGameResult(null);
+    setUsedLetters({});
+    setRevealedRows([]);
   };
 
   return (
@@ -68,6 +100,7 @@ function App() {
         revealedRows={revealedRows}
       />
       <Keyboard onKeyPress={handleKeyPress} usedLetters={usedLetters} />
+      {gameOver && <Popup result={gameResult} solution={solution} onRestart={restartGame} />}
     </div>
   );
 }
