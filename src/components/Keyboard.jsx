@@ -19,6 +19,8 @@ const Keyboard = ({ onKeyPress, usedLetters }) => {
               key={key}
               className={`key ${getStatus(key)} ${key === 'Enter' || key === 'Backspace' ? 'key-special' : ''}`}
               onClick={() => onKeyPress(key)}
+              onTouchStart={() => onKeyPress(key)}
+              style={{ touchAction: 'manipulation' }}
             >
               {key === 'Backspace' ? '⌫' : key}
             </button>
