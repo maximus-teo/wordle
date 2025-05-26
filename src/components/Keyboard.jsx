@@ -10,6 +10,21 @@ const KEY_LAYOUT = [
 const Keyboard = ({ onKeyPress, usedLetters }) => {
   const getStatus = (key) => usedLetters[key] || ''; // '' | 'correct' | 'present' | 'absent'
 
+  let lastTouchTime = 0;
+
+  const handleKeyPress = (e, key) => {
+    const now = Date.now();
+
+    if (e.type === 'touchstart') {
+      lastTouchTime = now;
+      onKeyPress(key);
+    } else if (e.type === 'click') {
+      if (now - lastTouchTime > 500) {
+        onKeyPress(key);
+      }
+    }
+  };
+
   return (
     <div className="keyboard">
       {KEY_LAYOUT.map((row, rowIdx) => (
@@ -18,8 +33,8 @@ const Keyboard = ({ onKeyPress, usedLetters }) => {
             <button
               key={key}
               className={`key ${getStatus(key)} ${key === 'Enter' || key === 'Backspace' ? 'key-special' : ''}`}
-              onClick={() => onKeyPress(key)}
-              onTouchStart={() => onKeyPress(key)}
+              onClick={(e) => handleKeyPress(e, key)}
+              onTouchStart={(e) => handleKeyPress(e, key)}
               style={{ touchAction: 'manipulation' }}
             >
               {key === 'Backspace' ? '⌫' : key}
