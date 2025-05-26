@@ -159,6 +159,7 @@ body {
 
 @media (max-width: 768px) {
   :root {
+    transform: scale(2);
     width: 100vw;
   }
 }
