@@ -19,7 +19,7 @@ const Grid = ({ guesses, currentGuess, solution, invalidGuess, revealedRows }) =
           <div className={`row ${isCurrentRow && invalidGuess ? 'shake' : ''}`} key={rowIdx}>
             {Array.from({ length: 5 }).map((_, i) => (
                 <Tile
-                key={`${rowIdx}-${i}-${gameOver ? 'done' : 'live'}`} // force full reset
+                key={`${rowIdx}-${i}`}
                 letter={displayWord[i] || ''}
                 status={!isCurrentRow ? getStatus(word[i], i, word, solution) : ''}
                 isRevealed={revealedRows.includes(rowIdx)}
