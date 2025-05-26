@@ -158,12 +158,9 @@ body {
 }
 
 @media (max-width: 768px) {
-  .grid {
-    transform: scale(0.9);
-    transform-origin: top center;
-  }
-
-  .keyboard {
-    scale: 0.95;
+  :root {
+    position: absolute;
+    top: -70px;
+    left: -20px;
   }
 }
