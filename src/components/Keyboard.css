@@ -62,8 +62,9 @@
   max-width: 20%;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .keyboard {
+    width: 80vw;
     padding: 0 20px;
     margin-top: 10px;
   }

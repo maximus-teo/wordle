@@ -156,3 +156,9 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  :root {
+    width: 100vw;
+  }
+}
