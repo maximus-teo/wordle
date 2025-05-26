@@ -1,6 +1,10 @@
 # Wordle on React
 
-A simple Wordle-style word guessing game built with React and Vite. Type or tap letters to guess the 5-letter word in 6 tries or less. Visual feedback shows correct, present, or absent letters.
+A simple Wordle clone built with React and Vite. Type or tap letters to guess the 5-letter word in 6 tries or less. Visual feedback shows correct, present, or absent letters. (With confetti!)
+
+## 🌐 Live Site
+
+This Wordle clone is deployed at https://maximus-teo.github.io/wordle
 
 ![demo screenshot](./screenshot.png)
 
@@ -10,7 +14,7 @@ A simple Wordle-style word guessing game built with React and Vite. Type or tap 
 
 - 🎮 Classic 6x5 word grid
 - 🎹 Virtual keyboard with real-time status
-- ✅ Word validation with curated dictionary (sourced from Wordle)
+- ✅ Word validation with curated dictionary
 - 🟩 Flip animations for tile reveals
 - 📱 Mobile responsive design
 - 🔁 Random solution each game
@@ -18,6 +22,8 @@ A simple Wordle-style word guessing game built with React and Vite. Type or tap 
 ---
 
 ## 🛠️ Setup
+
+You may choose to run this project on your machine as follows:
 
 ```bash
 # 1. Clone the repo

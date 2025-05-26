@@ -25,17 +25,28 @@ function App() {
   const [gameId, setGameId] = useState(0);
 
   const updateUsedLetters = (guess) => {
-    const newUsed = { ...usedLetters };
+    const flipDelay = 300;
+    const flipDuration = 300; 
     guess.split('').forEach((char, i) => {
-      if (solution[i] === char) {
-        newUsed[char] = 'correct';
-      } else if (solution.includes(char) && newUsed[char] !== 'correct') {
-        newUsed[char] = 'present';
-      } else if (!solution.includes(char) && !newUsed[char]) {
-        newUsed[char] = 'absent';
-      }
+      const delay = i * flipDelay + flipDuration;
+      setTimeout(() => {
+        setUsedLetters(prev => {
+          const newUsed = {...prev};
+          const currentStatus = newUsed[char];
+          const newStatus = solution[i] === char
+            ? 'correct'
+            : solution.includes(char)
+              ? 'present'
+              : 'absent';
+          
+          const priority = { '':0, absent:1, present:2, correct:3 };
+          if (priority[newStatus] > priority[currentStatus || '']) {
+            newUsed[char] = newStatus;
+          }
+          return newUsed;
+        });
+      }, delay);
     });
-    setUsedLetters(newUsed);
   };
 
   const handleKeyPress = (key) => {
@@ -46,11 +57,15 @@ function App() {
         setRevealedRows([...revealedRows, guesses.length]); // mark this row for animation
         setCurrentGuess('');
         if (currentGuess === solution) {
-          setGameResult('win');
-          setGameOver(true);
+          setGameResult('win'); // confetti
+          setTimeout(() => {
+            setGameOver(true); // popup
+          }, 2200);
         } else if (guesses.length + 1 >= 6) {
           setGameResult('lose');
-          setGameOver(true);
+          setTimeout(() => {
+            setGameOver(true);
+          }, 2000);
         }
       }
       else {
@@ -72,11 +87,13 @@ function App() {
 
   useEffect(() => {
   if (gameResult === 'win') {
-    confetti({
-      particleCount: 150,
-      spread: 80,
-      origin: { y: 0.6 }
-    });
+    setTimeout(() => {
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+    }, 1500);
   }
   }, [gameResult]);
 
