@@ -33,7 +33,6 @@ const Grid = ({ guesses, currentGuess, solution, invalidGuess, revealedRows }) =
   );
 };
 
-
 const getStatus = (letter, idx, word, solution) => {
   if (!letter) return '';
   if (solution[idx] === letter) return 'correct';
