@@ -161,5 +161,6 @@ body {
   .grid {
     transform: scale(0.9);
     transform-origin: top center;
+    margin-bottom: 20px;
   }
 }
