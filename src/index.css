@@ -158,8 +158,12 @@ body {
 }
 
 @media (max-width: 768px) {
-  :root {
-    transform: scale(2);
-    width: 100vw;
+  .grid {
+    transform: scale(0.9);
+    transform-origin: top center;
+  }
+
+  .keyboard {
+    scale: 0.95;
   }
 }
