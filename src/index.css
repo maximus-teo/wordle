@@ -66,8 +66,8 @@ h1 {
 }
 
 .tile {
-  width: 65px;
-  height: 65px;
+  width: 70px;
+  height: 70px;
   margin: 3px;
   display: flex;
   justify-content: center;
@@ -173,6 +173,6 @@ h1 {
   .grid {
     transform: scale(0.9);
     transform-origin: top center;
-    margin-bottom: 0px;
+    margin-bottom: -20px;
   }
 }
