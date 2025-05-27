@@ -86,15 +86,15 @@ function App() {
   }, [currentGuess, guesses]);
 
   useEffect(() => {
-  if (gameResult === 'win') {
-    setTimeout(() => {
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
-    }, 1500);
-  }
+    if (gameResult === 'win') {
+      setTimeout(() => {
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }, 1500);
+    }
   }, [gameResult]);
 
   const restartGame = () => {
@@ -110,7 +110,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Wordle</h1>
+      <h1>WORDLE</h1>
       <Grid
         key={gameId} // force full re-mount
         guesses={guesses}
