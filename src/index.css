@@ -173,6 +173,6 @@ h1 {
   .grid {
     transform: scale(0.8);
     transform-origin: top center;
-    margin-bottom: -30px;
+    margin-bottom: 0px;
   }
 }
