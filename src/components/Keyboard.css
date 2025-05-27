@@ -65,8 +65,9 @@
 
 @media (max-width: 768px) {
   .keyboard {
+    transform: scale(0.9);
     padding: 0 20px;
-    margin-top: -50px;
+    margin-top: -70px;
   }
 
   .keyboard-row {
