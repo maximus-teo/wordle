@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Grid from './components/Grid';
 import Keyboard from './components/Keyboard';
-import Popup from './components/Popup';
+import PopupEnd from './components/PopupEnd';
 import solutionWords from './data/solutionWords';
 import validWords from './data/validWords';
 import './App.css';
@@ -14,6 +14,21 @@ const getRandomWord = () => {
 };
 
 function App() {
+  const [darkMode, setDarkMode] = useState(() =>
+    localStorage.getItem('theme') === 'dark'
+  );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (darkMode) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [darkMode]);
+
   const [solution, setSolution] = useState(getRandomWord());
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState('');
@@ -111,6 +126,21 @@ function App() {
   return (
     <div className="app">
       <h1>WORDLE</h1>
+      <div className="icon-bar">
+        <button onClick={() => setDarkMode(prev => !prev)}>
+          <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
+        <button>
+          <i class="fa-solid fa-gear"></i>
+        </button>
+        <button>
+          <i class="fa-solid fa-chart-simple"></i>
+        </button>
+        <button>
+          <i class="fa-solid fa-trophy"></i>
+        </button>
+      </div>
+
       <Grid
         key={gameId} // force full re-mount
         guesses={guesses}
@@ -120,7 +150,7 @@ function App() {
         revealedRows={revealedRows}
       />
       <Keyboard onKeyPress={handleKeyPress} usedLetters={usedLetters} />
-      {gameOver && <Popup result={gameResult} solution={solution} onRestart={restartGame} />}
+      {gameOver && <PopupEnd result={gameResult} solution={solution} onRestart={restartGame} />}
     </div>
   );
 }

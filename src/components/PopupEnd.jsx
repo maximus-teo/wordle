@@ -1,4 +1,4 @@
-const Popup = ({ result, solution, onRestart }) => {
+const PopupEnd = ({ result, solution, onRestart }) => {
   return (
     <div className="popup">
       <div className="popup-content">
@@ -11,4 +11,4 @@ const Popup = ({ result, solution, onRestart }) => {
   );
 };
 
-export default Popup;
+export default PopupEnd;
