@@ -125,8 +125,8 @@ function App() {
 
   return (
     <div className="app">
-      <h1>WORDLE</h1>
-      <div className="icon-bar">
+      <h1 className="title">WORDLE</h1>
+      <div className="desktop-icon-bar">
         <button onClick={() => setDarkMode(prev => !prev)}>
           <i class="fa-solid fa-circle-half-stroke"></i>
         </button>
@@ -137,9 +137,25 @@ function App() {
           <i class="fa-solid fa-chart-simple"></i>
         </button>
         <button>
-          <i class="fa-solid fa-trophy"></i>
+          <i class="fa-solid fa-question-circle"></i>
         </button>
       </div>
+      <div className="mobile-icon-bar">
+        <h1>WORDLE</h1>
+        <button onClick={() => setDarkMode(prev => !prev)}>
+          <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
+        <button>
+          <i class="fa-solid fa-gear"></i>
+        </button>
+        <button>
+          <i class="fa-solid fa-chart-simple"></i>
+        </button>
+        <button>
+          <i class="fa-solid fa-question-circle"></i>
+        </button>
+      </div>
+      <hr className="bar-line"></hr>
 
       <Grid
         key={gameId} // force full re-mount

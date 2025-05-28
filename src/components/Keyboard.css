@@ -65,7 +65,7 @@
 
 @media (max-width: 768px) {
   .keyboard {
-    padding: 0;
+    padding: 0 20px;
     margin-top: -70px;
   }
 
@@ -74,21 +74,15 @@
   }
 
   .key {
-    min-width: 9%;
-    max-width: 10%;
+    min-width: 8.5%;
     font-size: 14px;
-    padding: 10px 0;
+    padding: 15px 0;
+    font-size: 1.2rem;
   }
 
   .key-special {
-    flex: 1.5 1 auto;
-    min-width: 10%;
+    min-width: 15%;
     max-width: 15%;
     font-size: 0.8rem;
-  }
-
-  .key:has(> svg), .key:has(> .icon) {
-    min-width: 18%;
-    max-width: 25%;
   }
 }
