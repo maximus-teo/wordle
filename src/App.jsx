@@ -1,13 +1,15 @@
 // `npm run dev` to start program
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Grid from './components/Grid';
 import Keyboard from './components/Keyboard';
 import PopupEnd from './components/PopupEnd';
+import PopupStats from './components/PopupStats';
 import solutionWords from './data/solutionWords';
 import validWords from './data/validWords';
 import './App.css';
 import confetti from 'canvas-confetti';
+import GoogleLogin from "./components/GoogleLogin";
 
 const getRandomWord = () => {
   return solutionWords[Math.floor(Math.random() * solutionWords.length)].toUpperCase();
@@ -29,6 +31,8 @@ function App() {
     }
   }, [darkMode]);
 
+  const [showStats, setShowStats] = useState(false);
+
   const [solution, setSolution] = useState(getRandomWord());
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState('');
@@ -38,6 +42,13 @@ function App() {
   const [gameOver, setGameOver] = useState(false);
   const [gameResult, setGameResult] = useState(null); // 'win' | 'lose' | null
   const [gameId, setGameId] = useState(0);
+  const [user, setUser] = useState(null);
+
+  const handleLogin = (userData) => {
+    console.log("User Info:", userData);
+    setUser(userData);
+    localStorage.setItem("wordleUser", JSON.stringify(userData));
+  };
 
   const updateUsedLetters = (guess) => {
     const flipDelay = 300;
@@ -67,20 +78,15 @@ function App() {
   const handleKeyPress = (key) => {
     if (key === 'Enter' && currentGuess.length === 5) {
       if (validWords.includes(currentGuess.toLowerCase())) {
-        setGuesses([...guesses, currentGuess]);
+        const newGuesses = [...guesses, currentGuess];
+        setGuesses(newGuesses);
         updateUsedLetters(currentGuess);
         setRevealedRows([...revealedRows, guesses.length]); // mark this row for animation
         setCurrentGuess('');
         if (currentGuess === solution) {
           setGameResult('win'); // confetti
-          setTimeout(() => {
-            setGameOver(true); // popup
-          }, 2200);
         } else if (guesses.length + 1 >= 6) {
           setGameResult('lose');
-          setTimeout(() => {
-            setGameOver(true);
-          }, 2000);
         }
       }
       else {
@@ -102,6 +108,7 @@ function App() {
 
   useEffect(() => {
     if (gameResult === 'win') {
+      updateStats(true, guesses.length);
       setTimeout(() => {
         confetti({
           particleCount: 150,
@@ -109,10 +116,17 @@ function App() {
           origin: { y: 0.6 }
         });
       }, 1500);
+      setTimeout(() => setGameOver(true), 2200);
+    } else if (gameResult === 'lose') {
+      updateStats(false);
+      setTimeout(() => setGameOver(true), 2000);
     }
   }, [gameResult]);
 
+  const statsUpdatedRef = useRef(false);
+
   const restartGame = () => {
+    statsUpdatedRef.current = false;
     setSolution(getRandomWord());
     setGuesses([]);
     setCurrentGuess('');
@@ -123,36 +137,112 @@ function App() {
     setGameId(prev => prev + 1); // bump to force reset
   };
 
+  const defaultStats = {
+    gamesPlayed: 0,
+    gamesWon: 0,
+    currentStreak: 0,
+    maxStreak: 0,
+    guessDistribution: [0, 0, 0, 0, 0, 0],
+  };
+
+  const [stats, setStats] = useState(() => {
+    try {
+      const saved = localStorage.getItem("userStats");
+      if (!saved) {
+        localStorage.setItem("userStats", JSON.stringify(defaultStats));
+        return JSON.parse(saved);
+      } else {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.warn("Failed to parse userStats from localStorage:", e);
+      return defaultStats;
+    }
+
+  });
+
+  useEffect(() => {
+    if (stats) localStorage.setItem("userStats", JSON.stringify(stats));
+  }, [stats]);
+
+  function updateStats(isWin, guessesUsed) {
+    if (statsUpdatedRef.current) return;
+    statsUpdatedRef.current = true;
+
+    let updatedStats;
+
+    setStats(prev => {
+      const newStats = { ...prev }; // take most recent stats
+
+      newStats.gamesPlayed++;
+      if (isWin) {
+        newStats.gamesWon++;
+        newStats.currentStreak++;
+        newStats.maxStreak = Math.max(newStats.currentStreak, newStats.maxStreak);
+        newStats.guessDistribution = [...newStats.guessDistribution]; // avoid direct mutation
+        newStats.guessDistribution[guessesUsed - 1]++;
+      } else {
+        newStats.currentStreak = 0;
+      }
+
+      updatedStats = newStats; // store in outer scope for side effect
+      return newStats;
+    });
+
+    // Wait for state to settle, then safely persist once
+    setTimeout(() => {
+      if (updatedStats) {
+        localStorage.setItem("userStats", JSON.stringify(updatedStats));
+      }
+    }, 0);
+  }
+
   return (
     <div className="app">
+      {!user ? (
+        <GoogleLogin onSuccess={handleLogin} />
+      ) : (
+        <div>
+          <h2>Welcome, {user.name}</h2>
+          <img src={user.picture} alt="profile" />
+        </div>
+      )}
+      <button className="dev-reset" onClick={() => {
+        localStorage.removeItem("userStats");
+        setStats(defaultStats);
+      }}>Reset Stats</button>
       <h1 className="title">WORDLE</h1>
       <div className="desktop-icon-bar">
         <button onClick={() => setDarkMode(prev => !prev)}>
-          <i class="fa-solid fa-circle-half-stroke"></i>
+          <i className="fa-solid fa-circle-half-stroke"></i>
         </button>
         <button>
-          <i class="fa-solid fa-gear"></i>
+          <i className="fa-solid fa-gear"></i>
+        </button>
+        <button onClick={() => setShowStats(true)}>
+          <i className="fa-solid fa-chart-simple"></i>
         </button>
         <button>
-          <i class="fa-solid fa-chart-simple"></i>
-        </button>
-        <button>
-          <i class="fa-solid fa-question-circle"></i>
+          <i className="fa-solid fa-question-circle"></i>
         </button>
       </div>
       <div className="mobile-icon-bar">
         <h1>WORDLE</h1>
+        <button className="dev-reset" onClick={() => {
+          localStorage.removeItem("userStats");
+          setStats(defaultStats);
+        }}>Reset Stats</button>
         <button onClick={() => setDarkMode(prev => !prev)}>
-          <i class="fa-solid fa-circle-half-stroke"></i>
+          <i className="fa-solid fa-circle-half-stroke"></i>
         </button>
         <button>
-          <i class="fa-solid fa-gear"></i>
+          <i className="fa-solid fa-gear"></i>
+        </button>
+        <button onClick={() => setShowStats(true)}>
+          <i className="fa-solid fa-chart-simple"></i>
         </button>
         <button>
-          <i class="fa-solid fa-chart-simple"></i>
-        </button>
-        <button>
-          <i class="fa-solid fa-question-circle"></i>
+          <i className="fa-solid fa-question-circle"></i>
         </button>
       </div>
       <hr className="bar-line"></hr>
@@ -166,6 +256,7 @@ function App() {
         revealedRows={revealedRows}
       />
       <Keyboard onKeyPress={handleKeyPress} usedLetters={usedLetters} />
+      {showStats && <PopupStats stats={stats} onClose={() => setShowStats(false)} />}
       {gameOver && <PopupEnd result={gameResult} solution={solution} onRestart={restartGame} />}
     </div>
   );
