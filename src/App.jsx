@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Grid from './components/Grid';
 import Keyboard from './components/Keyboard';
 import PopupEnd from './components/PopupEnd';
+import PopupSettings from './components/PopupSettings';
 import PopupStats from './components/PopupStats';
 import solutionWords from './data/solutionWords';
 import validWords from './data/validWords';
@@ -20,18 +21,30 @@ function App() {
     localStorage.getItem('theme') === 'dark'
   );
 
+  const [highContrast, setHighContrast] = useState(() =>
+    localStorage.getItem('theme') === 'hicon'
+  );
+
   useEffect(() => {
     const root = document.documentElement;
-    if (darkMode) {
+    if (highContrast) {
+      root.classList.add('hicon');
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'hicon');
+    }
+    else if (darkMode) {
+      root.classList.remove('hicon');
       root.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
+      root.classList.remove('hicon');
       root.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
-  }, [darkMode]);
+  }, [darkMode, highContrast]);
 
   const [showStats, setShowStats] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const [solution, setSolution] = useState(getRandomWord());
   const [guesses, setGuesses] = useState([]);
@@ -100,12 +113,14 @@ function App() {
     }
   };
 
+  // handle key press
   useEffect(() => {
     const listener = (e) => handleKeyPress(e.key);
     window.addEventListener('keydown', listener);
     return () => window.removeEventListener('keydown', listener);
   }, [currentGuess, guesses]);
 
+  // handle win and lose events
   useEffect(() => {
     if (gameResult === 'win') {
       updateStats(true, guesses.length);
@@ -113,7 +128,7 @@ function App() {
         confetti({
           particleCount: 150,
           spread: 80,
-          origin: { y: 0.6 }
+          origin: { y: 0.8 }
         });
       }, 1500);
       setTimeout(() => setGameOver(true), 2200);
@@ -135,6 +150,12 @@ function App() {
     setUsedLetters({});
     setRevealedRows([]);
     setGameId(prev => prev + 1); // bump to force reset
+  };
+  
+  const resetStats = () => {
+    localStorage.removeItem("userStats");
+    setStats(defaultStats);
+    alert("All player stats have been resetted.");
   };
 
   const defaultStats = {
@@ -207,16 +228,12 @@ function App() {
           <img src={user.picture} alt="profile" />
         </div>
       )}
-      <button className="dev-reset" onClick={() => {
-        localStorage.removeItem("userStats");
-        setStats(defaultStats);
-      }}>Reset Stats</button>
       <h1 className="title">WORDLE</h1>
       <div className="desktop-icon-bar">
         <button onClick={() => setDarkMode(prev => !prev)}>
           <i className="fa-solid fa-circle-half-stroke"></i>
         </button>
-        <button>
+        <button onClick={() => setShowSettings(true)}>
           <i className="fa-solid fa-gear"></i>
         </button>
         <button onClick={() => setShowStats(true)}>
@@ -228,14 +245,10 @@ function App() {
       </div>
       <div className="mobile-icon-bar">
         <h1>WORDLE</h1>
-        <button className="dev-reset" onClick={() => {
-          localStorage.removeItem("userStats");
-          setStats(defaultStats);
-        }}>Reset Stats</button>
         <button onClick={() => setDarkMode(prev => !prev)}>
           <i className="fa-solid fa-circle-half-stroke"></i>
         </button>
-        <button>
+        <button onClick={() => setShowSettings(true)}>
           <i className="fa-solid fa-gear"></i>
         </button>
         <button onClick={() => setShowStats(true)}>
@@ -257,7 +270,13 @@ function App() {
       />
       <Keyboard onKeyPress={handleKeyPress} usedLetters={usedLetters} />
       {showStats && <PopupStats stats={stats} onClose={() => setShowStats(false)} />}
-      {gameOver && <PopupEnd result={gameResult} solution={solution} onRestart={restartGame} />}
+      {showSettings &&
+      <PopupSettings
+      onReset={resetStats}
+      darkMode={() => setDarkMode(prev => !prev)}
+      highContrast={() => setHighContrast(prev => !prev)}
+      onClose={() => setShowSettings(false)}/>}
+      {gameOver && <PopupEnd result={gameResult} stats={stats} solution={solution} onRestart={restartGame} />}
     </div>
   );
 }

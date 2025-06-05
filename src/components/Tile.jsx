@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 const Tile = ({ letter, status, isRevealed, delay = 0 }) => {
+  const [delayedStatus, setDelayedStatus] = useState('');
+  const [pop, setPop] = useState(false);
 
   const style = {
     animationDelay: isRevealed ? `${delay}ms` : '0ms'
   };
-
-  const [delayedStatus, setDelayedStatus] = useState('');
 
   useEffect(() => {
     if (isRevealed) {
@@ -17,10 +17,23 @@ const Tile = ({ letter, status, isRevealed, delay = 0 }) => {
     }
   }, [isRevealed, status, delay]);
 
+  useEffect(() => {
+    if (!isRevealed && letter) {
+      setPop(true);
+      const timer = setTimeout(() => setPop(false), 150);
+      return () => clearTimeout(timer);
+    }
+  }, [letter, isRevealed]);
+
   return (
     <div className={`tile-container`}>
       <div
-        className={`tile ${delayedStatus} ${isRevealed ? 'flip' : ''}`}
+        className={`tile
+          ${delayedStatus}
+          ${isRevealed ? 'flip' : ''}
+          ${pop ? 'pop' : ''}
+          ${letter && !isRevealed ? 'filled' : ''}
+        `}
         style={style}
       >
         {letter}

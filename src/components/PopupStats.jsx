@@ -34,12 +34,22 @@ export default function PopupStats({ stats, onClose }) {
         <button className="popup-close" onClick={onClose}>
           &times;
         </button>
-        <h3>Your Stats</h3>
-        <p>Games Played: {gamesPlayed}</p>
-        <p>Wins: {gamesWon} ({gamesPlayed ? Math.round((gamesWon / gamesPlayed) * 100) : 0}%)</p>
-        <p>Current Streak: {currentStreak}</p>
-        <p>Max Streak: {maxStreak}</p>
-
+        <h2>Your Stats</h2>
+        <div className="stats-grid-container">
+          <div className="stats-grid-name">
+            <p>🕹️ GAMES PLAYED</p>
+            <p>🏆 WINS </p>
+            <p>🔥 CURRENT STREAK </p>
+            <p>👑 MAX STREAK</p>
+          </div>
+          <div className="stats-grid-data">
+            <p>{gamesPlayed}</p>
+            <p>{gamesWon} ({gamesPlayed ? Math.round((gamesWon / gamesPlayed) * 100) : 0}%)</p>
+            <p>{currentStreak}</p>
+            <p>{maxStreak}</p>
+          </div>
+        </div>
+        <hr className="bar-line"></hr>
         <h3>Guess Distribution</h3>
         <div className="guess-bars">
           {guessDistribution.map((count, i) => {

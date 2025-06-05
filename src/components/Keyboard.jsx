@@ -1,5 +1,4 @@
 import React from 'react';
-import './Keyboard.css';
 
 const KEY_LAYOUT = [
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
