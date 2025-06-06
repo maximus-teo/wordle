@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  font-family: 'Inter', system-ui, Helvetica, Arial, sans-serif;
 }
 
 html, body {
@@ -10,7 +11,6 @@ html, body {
 }
 
 :root {
-  font-family: 'Inter', system-ui, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -249,7 +249,7 @@ h3 {
   margin-top: 20px;
   padding: 0 10px;
   width: 100%;
-  max-width: 500px;
+  min-width: 50vw;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -264,7 +264,7 @@ h3 {
 
 .key {
   font-family: 'Inter', system-ui, Helvetica, Arial, sans-serif;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: bold;
   min-width: 40px;
   margin: 0 0px;
@@ -304,12 +304,6 @@ h3 {
   background-color: var(--tile-absent);
 }
 
-/* Special keys */
-.key:has(> svg), .key:has(> .icon) {
-  min-width: 15%;
-  max-width: 20%;
-}
-
 .popup {
   position: fixed;
   top: 0;
@@ -323,7 +317,7 @@ h3 {
   z-index: 1000;
 }
 
-.popup-content, .popup-stats {
+.popup-content, .popup-stats, .popup-confirm {
   position: relative;
   background: var(--popup-bg-color);
   min-width: 30%;
@@ -337,22 +331,16 @@ h3 {
   box-shadow: var(--popup-aura);
 }
 
+.popup-confirm {
+  max-width: 40%;
+  min-height: 35%;
+  max-height: 35%;
+}
+
 .popup-stats p {
   padding: 0;
   margin: 0;
   text-align: left;
-}
-
-.popup-content button:not(.popup-close) {
-  margin-top: 15px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  background-color: var(--btn-bg-color);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 .popup-close {
@@ -374,7 +362,7 @@ h3 {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  width: 33vw;
+  width: 30vw;
 }
 
 .settings-grid-danger {
@@ -390,14 +378,74 @@ h3 {
   align-items: center;
 }
 
-.settings-item p {
+.settings-item p, .settings-item label {
   text-align: left;
   width: 80%;
-  line-height: 1.5;
+  line-height: 1;
+  padding: 0;
+}
+
+.settings-item label {
+  padding: 10px 0;
+}
+
+.settings-item button, .popup-confirm button:not(.popup-close) {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: var(--btn-bg-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .settings-item button:hover {
   background-color: #000000;
+}
+
+.custom-select {
+  font-size: inherit;
+  background-color: var(--bg-color);
+  border: 1px solid var(--bg-color);
+  color: var(--text-color);
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+/* checkbox */
+.custom-checkbox .checkmark {
+  width: 24px;
+  height: 24px;
+  background-color: var(--text-color);
+  border: 2px solid var(--text-color);
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+}
+
+/* checkmark */
+.custom-checkbox input[type="checkbox"]:checked + .checkmark::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 0px;
+  width: 6px;
+  height: 12px;
+  border: solid var(--bg-color);
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
 }
 
 .stats-grid-container {
@@ -478,7 +526,7 @@ h3 {
 
 @media (max-width: 768px) {
   .keyboard {
-    padding: 0 20px;
+    padding: 0 10px;
     margin-top: -70px;
   }
 
@@ -487,15 +535,13 @@ h3 {
   }
 
   .key {
-    min-width: 8.5%;
+    min-width: 7.5%;
     font-size: 14px;
     padding: 15px 0;
     font-size: 1.2rem;
   }
 
-  .key-special {
-    min-width: 15%;
-    max-width: 15%;
+  .enter-key {
     font-size: 0.8rem;
   }
 }
@@ -567,12 +613,47 @@ h3 {
     font-size: 1rem;
   }
 
-  .popup-stats h2 {
-    font-size: 1.7rem;
+  .popup-content h2, .popup-stats h2, .popup-confirm h2 {
+    font-size: 1.5rem;
   }
 
-  .popup-stats h3 {
+  .popup-content h3, .popup-stats h3, .popup-confirm h3 {
     font-size: 1.2rem;
+  }
+
+  .popup-confirm {
+    max-width: 90%;
+    min-height: 40%;
+    max-height: 40%;
+    font-size: 1rem;
+  }
+
+  .settings-grid-container, .settings-grid-danger {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    width: 100%;
+  }
+
+  .settings-item {
+    gap: 30px;
+  }
+
+  .settings-item button {
+    font-size: 0.8rem;
+  }
+
+  .custom-checkbox {
+    font-size: 1rem;
+  }
+
+  .settings-grid-danger {
+    padding: 15px;
+    font-weight: bold;
+    border: 3px solid #d84545;
+    background-color: #d845452d;
+    border-radius: 20px;
   }
 
   .stats-grid-container {

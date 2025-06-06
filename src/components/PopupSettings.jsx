@@ -1,4 +1,17 @@
-const PopupSettings = ({ onReset, darkMode, highContrast, onClose }) => {
+import {useState} from 'react';
+import PopupConfirmReset from './PopupConfirmReset';
+
+const PopupSettings = ({ onReset, darkMode, highContrast, layouts, keyboardLayout, setKeyboardLayout, confetti, showConfetti, onClose }) => {
+
+  const [showConfirmReset, setShowConfirmReset] = useState(false);
+
+  const updateConfetti = () => {
+    console.log("confetti in local storage", localStorage.getItem("showConfetti"));
+    console.log("confetti set", confetti);
+    showConfetti();
+    console.log("confetti in LS after", localStorage.getItem("showConfetti"));
+    console.log("confetti set after", confetti);
+  };
 
   return (
     <div className="popup">
@@ -18,25 +31,52 @@ const PopupSettings = ({ onReset, darkMode, highContrast, onClose }) => {
                 <button onClick={highContrast}>Toggle</button>
             </div>
             <div className="settings-item">
-                <p>Keyboard Layout</p>
-                <button >Button</button>
+              <label htmlFor="keyboard-select">Keyboard Layout:</label>
+              <select
+                className="custom-select"
+                id="keyboard-select"
+                value={keyboardLayout}
+                onChange={(e) => setKeyboardLayout(e.target.value)}
+              >
+                {Object.keys(layouts).map(layout => (
+                  <option key={layout} value={layout}>{layout}</option>
+                ))}
+              </select>
             </div>
             <div className="settings-item">
-                <p>Hard Mode</p>
-                <button >Button</button>
-            </div>
-            <div className="settings-item">
-                <p>Confetti</p>
-                <button >Button</button>
+                <p>Confetti effects</p>
+                <label className="custom-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={confetti}
+                    onChange={updateConfetti}
+                  />
+                  <span className="checkmark"></span>
+                  {confetti ? 'On' : 'Off'}
+                </label>
             </div>
         </div>
         <div className="settings-grid-danger">
             <div className="settings-item">
-                <p>Resets all player data</p>
-                <button className="dev-reset" onClick={onReset}>RESET ALL</button>
+                <p>Hard Mode</p>
+                <label className="custom-checkbox">
+                  <input
+                    type="checkbox"
+                  />
+                  <span className="checkmark"></span>
+                  On/Off
+                </label>
+            </div>
+            <div className="settings-item">
+                <p>Reset all player data</p>
+                <button onClick={()=> setShowConfirmReset(true)}>RESET</button>
             </div>
         </div>
       </div>
+      {showConfirmReset &&
+        <PopupConfirmReset
+          confirmReset={onReset}
+          onClose={() => setShowConfirmReset(false)}/>}
     </div>
   );
 };

@@ -46,6 +46,23 @@ function App() {
   const [showStats, setShowStats] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
+  const [keyboardLayout, setKeyboardLayout] = useState('QWERTY');
+  const layouts = {
+    QWERTY: ['QWERTYUIOP', 'ASDFGHJKL', ['Enter', 'ZXCVBNM', 'Backspace']],
+    AZERTY: ['AZERTYUIOP', 'QSDFGHJKLM', ['Enter', 'WXCVBN', 'Backspace']],
+    DVORAK: ['PYFGCRL', 'AOEUIDHTNS', ['Enter', 'QJKXBMWVZ', 'Backspace']]
+  };
+
+  useEffect(() => {
+    if (keyboardLayout === 'QWERTY') {
+      localStorage.setItem('keyboardLayout', 'QWERTY');
+    } else if (keyboardLayout === 'AZERTY') {
+      localStorage.setItem('keyboardLayout', 'AZERTY');
+    } else {
+      localStorage.setItem('keyboardLayout', 'DVORAK');
+    }
+  }, [keyboardLayout])
+
   const [solution, setSolution] = useState(getRandomWord());
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState('');
@@ -54,6 +71,7 @@ function App() {
   const [usedLetters, setUsedLetters] = useState({});
   const [gameOver, setGameOver] = useState(false);
   const [gameResult, setGameResult] = useState(null); // 'win' | 'lose' | null
+  const [showConfetti, setShowConfetti] = useState(true);
   const [gameId, setGameId] = useState(0);
   const [user, setUser] = useState(null);
 
@@ -120,23 +138,30 @@ function App() {
     return () => window.removeEventListener('keydown', listener);
   }, [currentGuess, guesses]);
 
+  useEffect(() => {
+    if (showConfetti) localStorage.setItem("showConfetti", "true");
+    else localStorage.setItem("showConfetti", "false");
+  }, [showConfetti]);
+
   // handle win and lose events
   useEffect(() => {
     if (gameResult === 'win') {
       updateStats(true, guesses.length);
       setTimeout(() => {
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          origin: { y: 0.8 }
-        });
+        if (showConfetti) {
+          confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.8 }
+          });
+        }
       }, 1500);
       setTimeout(() => setGameOver(true), 2200);
     } else if (gameResult === 'lose') {
       updateStats(false);
       setTimeout(() => setGameOver(true), 2000);
     }
-  }, [gameResult]);
+  }, [gameResult, showConfetti]);
 
   const statsUpdatedRef = useRef(false);
 
@@ -155,7 +180,6 @@ function App() {
   const resetStats = () => {
     localStorage.removeItem("userStats");
     setStats(defaultStats);
-    alert("All player stats have been resetted.");
   };
 
   const defaultStats = {
@@ -268,17 +292,25 @@ function App() {
         invalidGuess={invalidGuess}
         revealedRows={revealedRows}
       />
-      <Keyboard onKeyPress={handleKeyPress} usedLetters={usedLetters} />
+      <Keyboard layout={layouts[keyboardLayout]} onKeyPress={handleKeyPress} usedLetters={usedLetters}/>
+
       {showStats && <PopupStats stats={stats} onClose={() => setShowStats(false)} />}
       {showSettings &&
-      <PopupSettings
-      onReset={resetStats}
-      darkMode={() => setDarkMode(prev => !prev)}
-      highContrast={() => setHighContrast(prev => !prev)}
-      onClose={() => setShowSettings(false)}/>}
+        <PopupSettings
+          onReset={resetStats}
+          darkMode={() => setDarkMode(prev => !prev)}
+          highContrast={() => setHighContrast(prev => !prev)}
+          layouts={layouts}
+          keyboardLayout={keyboardLayout}
+          setKeyboardLayout={setKeyboardLayout}
+          confetti={showConfetti}
+          showConfetti={() => setShowConfetti(prev => !prev)}
+          onClose={() => setShowSettings(false)}/>}
       {gameOver && <PopupEnd result={gameResult} stats={stats} solution={solution} onRestart={restartGame} />}
     </div>
   );
 }
 
 export default App;
+
+// <Keyboard onKeyPress={handleKeyPress} usedLetters={usedLetters} />
