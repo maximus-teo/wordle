@@ -107,7 +107,10 @@ function App() {
   };
 
   const handleKeyPress = (key) => {
+    const keySound = document.getElementById("key-press");
     if (key === 'Enter' && currentGuess.length === 5) {
+      keySound.currentTime = 0;
+      keySound.play();
       if (validWords.includes(currentGuess.toLowerCase())) {
         const newGuesses = [...guesses, currentGuess];
         setGuesses(newGuesses);
@@ -125,8 +128,12 @@ function App() {
         setTimeout(() => setInvalidGuess(false), 600); // reset after animation
       }
     } else if (key === 'Backspace') {
+      keySound.currentTime = 0;
+      keySound.play();
       setCurrentGuess(currentGuess.slice(0, -1));
     } else if (/^[a-zA-Z]$/.test(key) && currentGuess.length < 5) {
+      keySound.currentTime = 0;
+      keySound.play();
       setCurrentGuess(currentGuess + key.toUpperCase());
     }
   };
@@ -292,6 +299,7 @@ function App() {
         invalidGuess={invalidGuess}
         revealedRows={revealedRows}
       />
+      <audio id="key-press" src="wordle\src\assets\key_press.wav" preload="auto"></audio>
       <Keyboard layout={layouts[keyboardLayout]} onKeyPress={handleKeyPress} usedLetters={usedLetters}/>
 
       {showStats && <PopupStats stats={stats} onClose={() => setShowStats(false)} />}

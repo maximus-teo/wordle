@@ -389,7 +389,7 @@ h3 {
   padding: 10px 0;
 }
 
-.settings-item button, .popup-confirm button:not(.popup-close) {
+.settings-item button, .popup-content button:not(.popup-close), .popup-confirm button:not(.popup-close) {
   padding: 10px 20px;
   font-size: 1rem;
   font-weight: bold;
