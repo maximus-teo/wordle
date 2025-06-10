@@ -299,7 +299,7 @@ function App() {
         invalidGuess={invalidGuess}
         revealedRows={revealedRows}
       />
-      <audio id="key-press" src="wordle\src\assets\key_press.wav" preload="auto"></audio>
+      <audio id="key-press" src={`${process.env.PUBLIC_URL}/assets/key_press.wav`} preload="auto" />
       <Keyboard layout={layouts[keyboardLayout]} onKeyPress={handleKeyPress} usedLetters={usedLetters}/>
 
       {showStats && <PopupStats stats={stats} onClose={() => setShowStats(false)} />}
